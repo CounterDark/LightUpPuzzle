@@ -1,1 +1,0 @@
-# This is the main file to use all the algorithms.
