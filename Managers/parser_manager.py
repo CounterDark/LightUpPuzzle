@@ -14,6 +14,6 @@ def init_parser():
 
     parser.add_argument("-v", "--verbose", action="store_true",)
 
-    parser.add_argument("-n" , type=int, help="Ilość iteracji algorytmu. Domyślnie: 4000")
+    parser.add_argument("-k" , type=int, help="Ilość iteracji algorytmu. Domyślnie: 4000")
 
     return parser
