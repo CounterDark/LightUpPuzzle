@@ -26,12 +26,12 @@ def main():
     controller.test()
 
     board_str = board_file_util.read_board_flat(DEFAULT_BOARD_PATH)
-    board_manager.set_board(board_str)
+    board_state = board_manager.create_board_from_string(board_str)
     print("Set board", end='\n')
-    board_manager.print_board()
-    board_manager.place(1,0)
+    board_manager.print_board(board_state['board_matrix'])
+    board_manager.place(1,0, board_state['board_matrix'], board_state['columns'], board_state['rows'])
     print("Placed light", end='\n')
-    board_manager.print_board()
+    board_manager.print_board(board_state['board_matrix'])
 
 if __name__ == "__main__":
     main()
