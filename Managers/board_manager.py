@@ -64,10 +64,10 @@ def place(x, y, board_matrix):
     board_matrix[y][x] = 'l'
     x_offset = 1
     y_offset = 1
-    while left_incomplete or right_incomplete or top_incomplete or bottom_incomplete:
-        if y + y_offset >= rows:
-            bottom_incomplete = False
-        else:
+    iteration = 0
+    print('Placing: ', (x, y),  end=' ')
+    while (iteration < 10) & (left_incomplete or right_incomplete or top_incomplete or bottom_incomplete):
+        if bottom_incomplete & (y + y_offset < rows):
             field = get_field(x, y + y_offset, board_matrix)
             if field == '':
                 bottom_incomplete = False
@@ -77,10 +77,10 @@ def place(x, y, board_matrix):
                 bottom_incomplete = False
             else:
                 set_field(x, y + y_offset, '1', board_matrix)
+        elif bottom_incomplete:
+            bottom_incomplete = False
 
-        if y - y_offset < 0:
-            top_incomplete = False
-        else:
+        if top_incomplete & (y - y_offset >= 0):
             field = get_field(x, y - y_offset, board_matrix)
             if field == '':
                 top_incomplete = False
@@ -90,35 +90,38 @@ def place(x, y, board_matrix):
                 top_incomplete = False
             else:
                 set_field(x, y - y_offset, '1', board_matrix)
+        elif top_incomplete:
+            top_incomplete = False
 
-        if x - x_offset < 0:
-            left_incomplete = False
-        else:
+        if left_incomplete & (x - x_offset >= 0):
             field = get_field(x - x_offset, y, board_matrix)
             if field == '':
                 left_incomplete = False
             elif field == 'l':
-                raise Exception('lamp already placed in column')
+                raise Exception('lamp already placed in row')
             elif field.startswith('b'):
                 left_incomplete = False
             else:
                 set_field(x - x_offset, y, '1', board_matrix)
+        elif left_incomplete:
+            left_incomplete = False
 
-        if x + x_offset < 0:
-            right_incomplete = False
-        else:
+        if right_incomplete & (x + x_offset < columns):
             field = get_field(x + x_offset, y, board_matrix)
             if field == '':
                 right_incomplete = False
             elif field == 'l':
-                raise Exception('lamp already placed in column')
+                raise Exception('lamp already placed in row')
             elif field.startswith('b'):
                 right_incomplete = False
             else:
                 set_field(x + x_offset, y, '1', board_matrix)
+        elif right_incomplete:
+            right_incomplete = False
 
         x_offset = x_offset + 1
         y_offset = y_offset + 1
+        iteration += 1
     return board_matrix
 
 def parse_board_matrix(board_matrix) -> str:
@@ -183,7 +186,7 @@ def get_required_fill_amount(board_matrix) -> float:
     total = 0
     for y, row in enumerate(board_matrix):
         for x, column in enumerate(row):
-            if column.startswith('b') & len(column) == 2:
+            if column.startswith('b') & (len(column) == 2):
                 value = int(column[1])
                 if value == 0:
                     continue
@@ -212,7 +215,8 @@ def calculate_required_field_value(value, x, y, board_matrix) -> float:
         total += 1
     if right_field == '1' or right_field.startswith('l'):
         total += 1
-    return total / value
+    return min(total, value) / value
 
 def calculate_board_completeness(board_matrix) -> float:
     return get_fill_amount(board_matrix) * get_required_fill_amount(board_matrix)
+    # return get_fill_amount(board_matrix)
