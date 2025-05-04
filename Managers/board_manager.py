@@ -1,4 +1,5 @@
 from typing import TypedDict, List, Dict
+import random
 
 class BoardState(TypedDict):
     rows: int
@@ -65,7 +66,6 @@ def place(x, y, board_matrix):
     x_offset = 1
     y_offset = 1
     iteration = 0
-    print('Placing: ', (x, y),  end=' ')
     while (iteration < 10) & (left_incomplete or right_incomplete or top_incomplete or bottom_incomplete):
         if bottom_incomplete & (y + y_offset < rows):
             field = get_field(x, y + y_offset, board_matrix)
@@ -132,13 +132,14 @@ def print_board(board_matrix):
     for row in board_matrix:
         print('.'.join(row))
 
-def get_available_coordinates(board_matrix) -> List[Coordinate]:
+# Available coordinates are actually neighbours
+def get_available_coordinates_with_priority(board_matrix) -> List[Coordinate]:
     available_coordinates = []
     for row_index, row in enumerate(board_matrix):
         for col_index, column in enumerate(row):
             if column.startswith('l') or column == '1':
                 continue
-            if column.startswith('b'):
+            elif column.startswith('b'):
                 if column == 'b':
                     continue
                 else:
@@ -149,6 +150,18 @@ def get_available_coordinates(board_matrix) -> List[Coordinate]:
             else:
                 if check_adjacent_coordinates(col_index, row_index, board_matrix):
                     available_coordinates.append({'x': col_index, 'y': row_index})
+    return available_coordinates
+
+def get_available_coordinates(board_matrix) -> List[Coordinate]:
+    available_coordinates = []
+    for row_index, row in enumerate(board_matrix):
+        for col_index, column in enumerate(row):
+            if column.startswith('l') or column == '1':
+                continue
+            elif column.startswith('b'):
+                continue
+            else:
+                available_coordinates.append({'x': col_index, 'y': row_index})
     return available_coordinates
 
 def check_adjacent_coordinates(x, y, board_matrix) -> bool:
@@ -167,7 +180,6 @@ def check_adjacent_coordinates(x, y, board_matrix) -> bool:
     return True
 
 def get_fill_amount(board_matrix) -> float:
-    fill_amount = 0.0
     filled_fields = 0
     total = 0
     for y, row in enumerate(board_matrix):
@@ -186,6 +198,10 @@ def get_required_fill_amount(board_matrix) -> float:
     total = 0
     for y, row in enumerate(board_matrix):
         for x, column in enumerate(row):
+            if column.startswith('l'):
+                if not check_adjacent_coordinates(x, y, board_matrix):
+                    required_fill_amount -= 1
+                    total += 1
             if column.startswith('b') & (len(column) == 2):
                 value = int(column[1])
                 if value == 0:
@@ -195,7 +211,7 @@ def get_required_fill_amount(board_matrix) -> float:
                 total += 1
     if total == 0:
         return 0.0
-    return required_fill_amount / total
+    return max(required_fill_amount, 0) / total
 
 
 
@@ -217,6 +233,22 @@ def calculate_required_field_value(value, x, y, board_matrix) -> float:
         total += 1
     return min(total, value) / value
 
+# board completeness is a way to measure loss value
 def calculate_board_completeness(board_matrix) -> float:
     return get_fill_amount(board_matrix) * get_required_fill_amount(board_matrix)
     # return get_fill_amount(board_matrix)
+
+def random_fill_board(board_matrix, force_limit = 20):
+    is_complete = False
+    iteration = 0
+    while (iteration<=force_limit) & (not is_complete):
+        iteration += 1
+        choices = get_available_coordinates(board_matrix)
+        if len(choices) == 0:
+            is_complete = True
+            break
+        coordinates = random.choice(choices)
+        place(coordinates['x'], coordinates['y'], board_matrix)
+        completeness = get_fill_amount(board_matrix)
+        if completeness == 1.0:
+            is_complete = True
