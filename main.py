@@ -29,9 +29,17 @@ def main():
     board_state = board_manager.create_board_from_string(board_str)
     print("Set board", end='\n')
     board_manager.print_board(board_state['board_matrix'])
-    board_manager.place(1,0, board_state['board_matrix'], board_state['columns'], board_state['rows'])
+    print("\n")
+    print("Board completeness", end='\n')
+    print(board_manager.calculate_board_completeness(board_state['board_matrix']))
+    print("\n")
+    board_manager.place(1, 1, board_state['board_matrix'])
     print("Placed light", end='\n')
     board_manager.print_board(board_state['board_matrix'])
+    print("\n")
+    print("Board completeness", end='\n')
+    print(board_manager.calculate_board_completeness(board_state['board_matrix']))
+    print("\n")
 
 if __name__ == "__main__":
     main()
