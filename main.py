@@ -31,8 +31,6 @@ def main():
     print('Columns: ', len(board_state['board_matrix'][0]))
     print("Set board", end='\n\n')
     board_manager.print_board(board_state['board_matrix'])
-    print("Board completeness", end='\n')
-    print(board_manager.calculate_board_completeness(board_state['board_matrix']))
     # board_manager.place(1, 0, board_state['board_matrix'])
     # print("Board completeness", end='\n')
     # print(board_manager.calculate_board_completeness(board_state['board_matrix']))
@@ -90,8 +88,8 @@ def main():
     # board_manager.place(7, 9, board_state['board_matrix'])
     # print("Board completeness", end='\n')
     # print(board_manager.calculate_board_completeness(board_state['board_matrix']))
-    board_manager.random_fill_board(board_state['board_matrix'])
-    print(board_manager.calculate_board_completeness(board_state['board_matrix']))
+    board_manager.random_fill_board(board_state['board_matrix'], force_limit = 10000)
+    print('\nBoard completeness: ', board_manager.calculate_board_completeness(board_state['board_matrix']))
     board_manager.print_board(board_state['board_matrix'])
 
 if __name__ == "__main__":
