@@ -260,10 +260,17 @@ def get_remove_candidates(board_matrix) -> List[Coordinate]:
 
 def get_actions(board_matrix) -> List[Action]:
     actions = []
-    for place_candidate in get_available_coordinates(board_matrix):
-        actions.append(Action(action='p', coordinate=place_candidate))
-    for remove_candidate in get_remove_candidates(board_matrix):
-        actions.append(Action(action='r', coordinate=remove_candidate))
+    for row_index, row in enumerate(board_matrix):
+        for col_index, column in enumerate(row):
+            if column.startswith('l'):
+                actions.append(Action(action='r', coordinate={'x': col_index, 'y': row_index}))
+                continue
+            elif column.startswith('b'):
+                continue
+            elif column != '0':
+                continue
+            else:
+                actions.append(Action(action='p', coordinate={'x': col_index, 'y': row_index}))
     return actions
 
 def check_adjacent_coordinates(x, y, board_matrix) -> bool:
