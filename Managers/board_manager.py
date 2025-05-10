@@ -340,7 +340,7 @@ def calculate_required_field_value(value, x, y, board_matrix) -> float:
         total += 1
     if (not right_field.startswith('b')) & (right_field != '0' or right_field.startswith('l')):
         total += 1
-    return min(total, value) / value
+    return min(total, value) - (max(total, value)-value) / value
 
 # board completeness is a way to measure loss value
 def calculate_board_completeness(board_matrix) -> float:
