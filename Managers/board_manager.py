@@ -1,5 +1,4 @@
-from argparse import Action
-from typing import TypedDict, List, Dict
+from typing import TypedDict, List
 import random
 
 class BoardState(TypedDict):
@@ -55,9 +54,9 @@ def set_field(x, y, value, board_matrix):
     columns = len(board_matrix[0])
     if x < 0 or x >= columns or y < 0 or y >= rows:
         raise Exception('Invalid coordinate')
-    if (value == '1') & (not board_matrix[y][x].startswith('b')) & (not board_matrix[y][x].startswith('l')):
+    if (value == '1') and (not board_matrix[y][x].startswith('b')) and (not board_matrix[y][x].startswith('l')):
         board_matrix[y][x] = str(int(board_matrix[y][x]) + 1)
-    elif (value == '0') & (not board_matrix[y][x].startswith('b')) & (not board_matrix[y][x].startswith('l')):
+    elif (value == '0') and (not board_matrix[y][x].startswith('b')) and (not board_matrix[y][x].startswith('l')):
         board_matrix[y][x] = str(max(int(board_matrix[y][x]) - 1, 0))
     else:
         board_matrix[y][x] = value
@@ -76,8 +75,8 @@ def place(x, y, board_matrix):
     x_offset = 1
     y_offset = 1
     iteration = 0
-    while (iteration < 10) & (left_incomplete or right_incomplete or top_incomplete or bottom_incomplete):
-        if bottom_incomplete & (y + y_offset < rows):
+    while (iteration < 10) and (left_incomplete or right_incomplete or top_incomplete or bottom_incomplete):
+        if bottom_incomplete and (y + y_offset < rows):
             field = get_field(x, y + y_offset, board_matrix)
             if field == '':
                 bottom_incomplete = False
@@ -90,7 +89,7 @@ def place(x, y, board_matrix):
         elif bottom_incomplete:
             bottom_incomplete = False
 
-        if top_incomplete & (y - y_offset >= 0):
+        if top_incomplete and (y - y_offset >= 0):
             field = get_field(x, y - y_offset, board_matrix)
             if field == '':
                 top_incomplete = False
@@ -103,7 +102,7 @@ def place(x, y, board_matrix):
         elif top_incomplete:
             top_incomplete = False
 
-        if left_incomplete & (x - x_offset >= 0):
+        if left_incomplete and (x - x_offset >= 0):
             field = get_field(x - x_offset, y, board_matrix)
             if field == '':
                 left_incomplete = False
@@ -116,7 +115,7 @@ def place(x, y, board_matrix):
         elif left_incomplete:
             left_incomplete = False
 
-        if right_incomplete & (x + x_offset < columns):
+        if right_incomplete and (x + x_offset < columns):
             field = get_field(x + x_offset, y, board_matrix)
             if field == '':
                 right_incomplete = False
@@ -147,8 +146,8 @@ def remove(x, y, board_matrix):
     x_offset = 1
     y_offset = 1
     iteration = 0
-    while (iteration < 10) & (left_incomplete or right_incomplete or top_incomplete or bottom_incomplete):
-        if bottom_incomplete & (y + y_offset < rows):
+    while (iteration < 10) and (left_incomplete or right_incomplete or top_incomplete or bottom_incomplete):
+        if bottom_incomplete and (y + y_offset < rows):
             field = get_field(x, y + y_offset, board_matrix)
             if field == '':
                 bottom_incomplete = False
@@ -161,7 +160,7 @@ def remove(x, y, board_matrix):
         elif bottom_incomplete:
             bottom_incomplete = False
 
-        if top_incomplete & (y - y_offset >= 0):
+        if top_incomplete and (y - y_offset >= 0):
             field = get_field(x, y - y_offset, board_matrix)
             if field == '':
                 top_incomplete = False
@@ -174,7 +173,7 @@ def remove(x, y, board_matrix):
         elif top_incomplete:
             top_incomplete = False
 
-        if left_incomplete & (x - x_offset >= 0):
+        if left_incomplete and (x - x_offset >= 0):
             field = get_field(x - x_offset, y, board_matrix)
             if field == '':
                 left_incomplete = False
@@ -187,7 +186,7 @@ def remove(x, y, board_matrix):
         elif left_incomplete:
             left_incomplete = False
 
-        if right_incomplete & (x + x_offset < columns):
+        if right_incomplete and (x + x_offset < columns):
             field = get_field(x + x_offset, y, board_matrix)
             if field == '':
                 right_incomplete = False
@@ -311,7 +310,7 @@ def get_required_fill_amount(board_matrix) -> float:
                 if not check_adjacent_coordinates(x, y, board_matrix):
                     required_fill_amount -= 1
                     total += 1
-            if column.startswith('b') & (len(column) == 2):
+            if column.startswith('b') and (len(column) == 2):
                 value = int(column[1])
                 if value == 0:
                     continue
@@ -332,19 +331,19 @@ def calculate_required_field_value(value, x, y, board_matrix) -> float:
     down_field = safe_get_field(x, y + 1, board_matrix)
     left_field = safe_get_field(x - 1, y, board_matrix)
     right_field = safe_get_field(x + 1, y, board_matrix)
-    if (not up_field.startswith('b')) & up_field.startswith('l'):
+    if (not up_field.startswith('b')) and up_field.startswith('l'):
         total += 1
-    if (not down_field.startswith('b')) & down_field.startswith('l'):
+    if (not down_field.startswith('b')) and down_field.startswith('l'):
         total += 1
-    if (not left_field.startswith('b')) & left_field.startswith('l'):
+    if (not left_field.startswith('b')) and left_field.startswith('l'):
         total += 1
-    if (not right_field.startswith('b')) & right_field.startswith('l'):
+    if (not right_field.startswith('b')) and right_field.startswith('l'):
         total += 1
     return (min(total, value) - (max(total, value)-value)) / value
 
 # board completeness is a way to measure loss value
 def calculate_board_completeness(board_matrix) -> float:
-    return get_fill_amount(board_matrix) * get_required_fill_amount(board_matrix)
+    # return get_fill_amount(board_matrix) * get_required_fill_amount(board_matrix)
     required_fill_amount = 0.0
     total_required = 0
     filled_fields = 0
@@ -355,9 +354,8 @@ def calculate_board_completeness(board_matrix) -> float:
                 if not check_adjacent_coordinates(x, y, board_matrix):
                     required_fill_amount -= 1
                     total_required += 1
-                else:
-                    filled_fields += 1
-            if column.startswith('b') & (len(column) == 2):
+                filled_fields += 1
+            elif column.startswith('b') and (len(column) == 2):
                 value = int(column[1])
                 if value == 0:
                     continue
@@ -365,10 +363,12 @@ def calculate_board_completeness(board_matrix) -> float:
                 required_fill_amount += field_fill
                 total_required += 1
                 continue
-            if column.startswith('b'):
+            elif column.startswith('b'):
                 continue
+            elif column != '0':
+                filled_fields += 1
             total_fill_fields += 1
-    if total_required == 0 | total_fill_fields == 0:
+    if total_required == 0 or total_fill_fields == 0:
         return 0.0
     return (filled_fields / total_fill_fields) * (max(required_fill_amount, 0) / total_required)
     # return get_fill_amount(board_matrix)
@@ -376,7 +376,7 @@ def calculate_board_completeness(board_matrix) -> float:
 def random_fill_board(board_matrix, force_limit = 20):
     is_complete = False
     iteration = 0
-    while (iteration<=force_limit) & (not is_complete):
+    while (iteration<=force_limit) and (not is_complete):
         iteration += 1
         choices = get_actions(board_matrix)
         if len(choices) == 0:
@@ -391,5 +391,6 @@ def random_fill_board(board_matrix, force_limit = 20):
         completeness = calculate_board_completeness(board_matrix)
         # print('Completeness:', completeness)
         if completeness == 1.0:
-            print('Iterations: ', iteration)
+            # print('Iterations: ', iteration)
             is_complete = True
+    return board_matrix
