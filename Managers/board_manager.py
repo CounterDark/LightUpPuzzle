@@ -332,19 +332,45 @@ def calculate_required_field_value(value, x, y, board_matrix) -> float:
     down_field = safe_get_field(x, y + 1, board_matrix)
     left_field = safe_get_field(x - 1, y, board_matrix)
     right_field = safe_get_field(x + 1, y, board_matrix)
-    if (not up_field.startswith('b')) & (up_field != '0' or up_field.startswith('l')):
+    if (not up_field.startswith('b')) & up_field.startswith('l'):
         total += 1
-    if (not down_field.startswith('b')) & (down_field != '0' or down_field.startswith('l')):
+    if (not down_field.startswith('b')) & down_field.startswith('l'):
         total += 1
-    if (not left_field.startswith('b')) & (left_field != '0' or left_field.startswith('l')):
+    if (not left_field.startswith('b')) & left_field.startswith('l'):
         total += 1
-    if (not right_field.startswith('b')) & (right_field != '0' or right_field.startswith('l')):
+    if (not right_field.startswith('b')) & right_field.startswith('l'):
         total += 1
-    return min(total, value) - (max(total, value)-value) / value
+    return (min(total, value) - (max(total, value)-value)) / value
 
 # board completeness is a way to measure loss value
 def calculate_board_completeness(board_matrix) -> float:
     return get_fill_amount(board_matrix) * get_required_fill_amount(board_matrix)
+    required_fill_amount = 0.0
+    total_required = 0
+    filled_fields = 0
+    total_fill_fields = 0
+    for y, row in enumerate(board_matrix):
+        for x, column in enumerate(row):
+            if column.startswith('l'):
+                if not check_adjacent_coordinates(x, y, board_matrix):
+                    required_fill_amount -= 1
+                    total_required += 1
+                else:
+                    filled_fields += 1
+            if column.startswith('b') & (len(column) == 2):
+                value = int(column[1])
+                if value == 0:
+                    continue
+                field_fill = calculate_required_field_value(value, x, y, board_matrix)
+                required_fill_amount += field_fill
+                total_required += 1
+                continue
+            if column.startswith('b'):
+                continue
+            total_fill_fields += 1
+    if total_required == 0 | total_fill_fields == 0:
+        return 0.0
+    return (filled_fields / total_fill_fields) * (max(required_fill_amount, 0) / total_required)
     # return get_fill_amount(board_matrix)
 
 def random_fill_board(board_matrix, force_limit = 20):
