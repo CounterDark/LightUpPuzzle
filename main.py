@@ -18,13 +18,13 @@ def main():
     args = parser.parse_args()
 
     iterations = args_utils.get_k(args) or DEFAULT_LOOPS
-    input_file = args_utils.get_input_file(args)
+    input_file = args_utils.get_input_file(args) or DEFAULT_BOARD_PATH
     output_file = args_utils.get_output_file(args)
     verbose = args_utils.is_verbose(args)
 
-    print(input_file)
 
     if verbose:
+        print("Wybrany plik: ", input_file)
         print("Wybrano algorytm:", args_utils.get_algorithm(args))
 
     controller = get_algorithm(args_utils.get_algorithm(args))

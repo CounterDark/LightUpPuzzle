@@ -3,7 +3,7 @@ import argparse
 def init_parser():
     parser = argparse.ArgumentParser(description="Program rozwiązujący zagadkę LightUp przy użyciu różnych algorytmów")
 
-    parser.add_argument("algorithm", type=str, choices=["hill_climb", "tabu", "hill_climb_stochastic"],
+    parser.add_argument("algorithm", type=str, choices=["hill_climb", "tabu", "hill_climb_stochastic", "brute_force"],
                         help="Nazwa algorytmu do użycia (np. brute_force, hill_climb, tabu)")
 
     parser.add_argument("-i", "--input_file", type=str,
