@@ -25,8 +25,9 @@ def create_board_from_string(board_string, start_string = '') -> BoardState:
     rows = len(rows_data)
     board_matrix = [row.split('.') for row in rows_data]
     columns = len(board_matrix[0]) if rows > 0 else 0
-    if rows != columns:
-        raise ValueError('Board must be square')
+    for row in board_matrix:
+        if len(row) != columns:
+            raise Exception('Invalid row size')
     return {
         'rows': rows,
         'columns': columns,
@@ -75,7 +76,7 @@ def place(x, y, board_matrix):
     x_offset = 1
     y_offset = 1
     iteration = 0
-    while (iteration < 10) and (left_incomplete or right_incomplete or top_incomplete or bottom_incomplete):
+    while left_incomplete or right_incomplete or top_incomplete or bottom_incomplete:
         if bottom_incomplete and (y + y_offset < rows):
             field = get_field(x, y + y_offset, board_matrix)
             if field == '':
