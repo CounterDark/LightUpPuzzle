@@ -19,3 +19,12 @@ def get_output_file(args: Namespace):
 
 def get_tabu_size(args: Namespace):
     return args.tabu_size
+
+def get_alpha(args: Namespace):
+    return args.alpha
+
+def get_temp_function(args: Namespace):
+    return args.temp_function
+
+def get_start_temp(args: Namespace):
+    return args.start_temp

@@ -50,6 +50,12 @@ def main():
 
     if args_utils.get_tabu_size(args):
         options['tabu_size'] = args_utils.get_tabu_size(args)
+    if args_utils.get_start_temp(args):
+        options['start_temp'] = args_utils.get_start_temp(args)
+    if args_utils.get_alpha(args):
+        options['alpha'] = args_utils.get_alpha(args)
+    if args_utils.get_temp_function(args):
+        options['temp_function'] = args_utils.get_temp_function(args)
 
     solution,iterations = controller.solve(board_state['board_matrix'], iterations, input_file, output_file, verbose, options)
     print("Solution:", end='\n')

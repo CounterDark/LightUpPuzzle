@@ -7,7 +7,7 @@ import csv
 import sys
 from itertools import product
 
-ALGORITHMS = ["hill_climb", "hill_climb_stochastic", "tabu", "brute_force"]
+ALGORITHMS = ["hill_climb", "hill_climb_stochastic", "tabu", "brute_force", "annealing"]
 INPUT_FILE = "Resources/Boards/board1"
 ITERATIONS = [100, 150, 500]
 REPEATS = 2
@@ -16,6 +16,11 @@ PARAMETERS = {
     "tabu": {
         "tabu_size": [10, 50, 100]
     },
+    "annealing": {
+        "start_temp": [1.0, 10.0, 100.0],
+        "alpha": [0.1, 0.001, 1.0],
+        "temp_function": ["linear", "exponential", "log"]
+    }
 }
 
 CSV_OUTPUT = "results.csv"
