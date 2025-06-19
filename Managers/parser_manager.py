@@ -16,4 +16,5 @@ def init_parser():
 
     parser.add_argument("-k" , type=int, help="Ilość iteracji algorytmu. Domyślnie: 4000")
 
+    parser.add_argument("--tabu_size", type=int, help="Rozmiar listy tabu (tylko dla tabu)")
     return parser

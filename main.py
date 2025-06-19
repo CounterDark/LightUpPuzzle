@@ -46,10 +46,15 @@ def main():
         print("Set board", end='\n\n')
         board_manager.print_board(board_state['board_matrix'])
 
-    solution,iterations = controller.solve(board_state['board_matrix'], iterations, input_file, output_file, verbose)
+    options = {}
+
+    if args_utils.get_tabu_size(args):
+        options['tabu_size'] = args_utils.get_tabu_size(args)
+
+    solution,iterations = controller.solve(board_state['board_matrix'], iterations, input_file, output_file, verbose, options)
     print("Solution:", end='\n')
     board_manager.print_board(solution)
     print("Iterations:", iterations, end='\n\n')
-    print("Completness: ", board_manager.calculate_board_completeness(solution))
+    print("Completeness: ", board_manager.calculate_board_completeness(solution))
 if __name__ == "__main__":
     main()

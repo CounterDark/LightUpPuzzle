@@ -16,3 +16,6 @@ def get_input_file(args: Namespace):
 
 def get_output_file(args: Namespace):
     return args.output_file
+
+def get_tabu_size(args: Namespace):
+    return args.tabu_size

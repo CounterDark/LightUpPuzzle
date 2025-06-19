@@ -11,9 +11,8 @@ def print_name():
 def solve(initial_board_matrix, k, input_path, output_path, verbose, options=None):
     global_best = [initial_board_matrix]
     best_loss = am.loss(initial_board_matrix)
-    options = options or {
-        "stop_on_complete": True
-    }
+    options = options or {}
+    stop_on_completeness = options.get('stop_on_completeness', True)
 
     iterations = 0
 
@@ -31,7 +30,7 @@ def solve(initial_board_matrix, k, input_path, output_path, verbose, options=Non
         # if verbose:
         #     print("Current loss:", loss)
         if loss == 0.0:
-            if options["stop_on_complete"]:
+            if stop_on_completeness:
                 return current_path, iterations
             if best_loss > 0.0:
                 best_loss = 0.0
@@ -48,6 +47,8 @@ def solve(initial_board_matrix, k, input_path, output_path, verbose, options=Non
                     print("Best loss: ", best_loss)
             path_neighbours = am.generate_neighbours(current_path, only_place=True)
             global_paths.extend(path_neighbours)
+        if verbose:
+            print("Iteration Completeness: ", 1.0 - best_loss)
         iterations += 1
     if verbose:
         print("Global best paths: ", len(global_best))

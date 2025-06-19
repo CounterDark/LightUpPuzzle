@@ -5,7 +5,7 @@ def print_name():
     print("Test Hill Climb")
     return
 
-def solve(initial_board_matrix, k, input_path, output_path, verbose):
+def solve(initial_board_matrix, k, input_path, output_path, verbose, options=None):
     current = am.random_solution(initial_board_matrix)
     for i in range(k):
         neighbours = am.generate_neighbours(current)
@@ -17,4 +17,6 @@ def solve(initial_board_matrix, k, input_path, output_path, verbose):
             current = best_neighbour
         else:
             return current, i
+        if verbose:
+            print("Iteration Completeness: ", 1.0 - am.loss(current))
     return current, k
