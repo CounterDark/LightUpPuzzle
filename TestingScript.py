@@ -48,20 +48,20 @@ def analyze_efficiency(results, target_precision=1):
     grouped = {}
     for row in results:
         rounded = round(row["completeness"], target_precision)
-        key = f"{rounded:.2f}"
+        key = f"{rounded:.{target_precision}f}"
         if key not in grouped:
             grouped[key] = []
         grouped[key].append(row)
 
     for group in sorted(grouped.keys(), reverse=True):
         algorithms = grouped[group]
-        if len(algorithms) < 2:
-            continue
+        # if len(algorithms) < 2:
+        #     continue
 
         print(f"\nGroup  {group}:")
         best = min(algorithms, key=lambda r: r["duration"])
         print(f"Fastest: {best['algorithm']} {best['params']}")
-        print(f"Duration: {best['duration']:.4f} s, Completeness: {best['completeness']:.4f}")
+        print(f"Duration: {best['duration']:.4f} s, Completeness: {best['completeness']:.{target_precision+3}f}")
 
 def merge_with_variations(new_parameters, parameters_set):
     new_set = []
@@ -73,7 +73,7 @@ def merge_with_variations(new_parameters, parameters_set):
     return new_set
 
 def compare():
-    results = []
+    results = {}
 
     for algo in ALGORITHMS:
         param_set = [{"iterations": it} for it in ITERATIONS]
@@ -92,13 +92,14 @@ def compare():
                 completeness = parse_completeness(output)
                 convergence = parse_convergence(output)
 
-                results.append({
-                    "algorithm": algo,
-                    "params": json.dumps(params),
-                    "duration": duration,
-                    "completeness": completeness,
-                    "convergence": convergence
-                })
+                if algo not in results or results.get(algo, {}).get("completeness", 0.0) < completeness:
+                    results[algo] = ({
+                        "algorithm": algo,
+                        "params": json.dumps(params),
+                        "duration": duration,
+                        "completeness": completeness,
+                        "convergence": convergence
+                    })
     return results
 
 def save_to_csv(results, filename):
@@ -153,7 +154,8 @@ def plot_results(results):
 
 if __name__ == "__main__":
     results = compare()
-    save_to_csv(results, CSV_OUTPUT)
+    results_values = results.values()
+    save_to_csv(results_values, CSV_OUTPUT)
     print(f"\nResults saved to: {CSV_OUTPUT}")
-    plot_results(results)
-    analyze_efficiency(results)
+    plot_results(results_values)
+    analyze_efficiency(results_values)
